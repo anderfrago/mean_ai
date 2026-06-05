@@ -31,6 +31,15 @@ The API runs on `http://localhost:3000`.
 
 The Angular app runs on `http://localhost:4200`.
 
+To enable AI-generated product descriptions, configure the server environment:
+
+```bash
+export OPENAI_API_KEY="your_api_key_here"
+export OPENAI_MODEL="gpt-5.4-mini"
+```
+
+`OPENAI_MODEL` is optional. The API key must remain server-side and must never be exposed through Angular environment files.
+
 ## Scripts
 
 ```bash
@@ -81,6 +90,7 @@ POST   /api/products
 GET    /api/products/:id
 PATCH  /api/products/:id
 DELETE /api/products/:id
+POST   /api/products/generate-description
 ```
 
 The Angular inventory screens are available at:

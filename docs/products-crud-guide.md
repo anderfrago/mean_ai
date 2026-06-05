@@ -271,6 +271,27 @@ Useful table columns:
 8. Connect form submit actions to the API services.
 9. Refresh the list after create, update, or delete.
 10. Use Bootstrap classes for forms, tables, alerts, badges, buttons, and responsive layout.
+11. Keep the description field hidden initially and reveal it when AI generation starts.
+12. Read the generated description incrementally from a Fetch response stream.
+
+### AI Description Generation
+
+The Angular product form sends the product name, SKU, category, and prescription status to:
+
+```text
+POST /api/products/generate-description
+```
+
+The Express server calls the OpenAI Responses API with streaming enabled. It forwards only text deltas to Angular as a plain UTF-8 stream.
+
+Security rules:
+
+- Store `OPENAI_API_KEY` only on the server.
+- Never add the API key to Angular environment files.
+- Validate product context before calling OpenAI.
+- Limit generated output length.
+- Do not request or invent dosage, efficacy, contraindication, or regulatory claims.
+- Allow the browser to cancel generation with `AbortController`.
 
 ## 8. Testing Checklist
 

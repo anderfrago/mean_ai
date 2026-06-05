@@ -8,6 +8,7 @@ import {
   listProducts,
   updateProduct
 } from "../services/product.service.js";
+import { createProductDescriptionStream } from "../services/product-description.service.js";
 import { ok } from "../utils/api-response.js";
 
 const productSchema = z.object({
@@ -20,6 +21,13 @@ const productSchema = z.object({
   minimumStock: z.coerce.number().int().min(0),
   expirationDate: z.coerce.date().optional(),
   active: z.boolean().default(true)
+});
+
+const descriptionGenerationSchema = z.object({
+  name: z.string().trim().min(2).max(150),
+  sku: z.string().trim().max(50).optional(),
+  categoryName: z.string().trim().min(2).max(100),
+  requiresPrescription: z.boolean().default(false)
 });
 
 function getId(req: Request): string {
@@ -71,5 +79,40 @@ export async function remove(req: Request, res: Response, next: NextFunction): P
     res.status(204).send();
   } catch (error) {
     next(error);
+  }
+}
+
+export async function generateDescription(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  const controller = new AbortController();
+  res.on("close", () => controller.abort());
+
+  try {
+    const input = descriptionGenerationSchema.parse(req.body);
+    const stream = await createProductDescriptionStream(input, controller.signal);
+
+    res.status(200);
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
+
+    for await (const event of stream) {
+      if (event.type === "response.output_text.delta") {
+        res.write(event.delta);
+      }
+    }
+
+    res.end();
+  } catch (error) {
+    if (!res.headersSent) {
+      next(error);
+      return;
+    }
+
+    res.destroy(error instanceof Error ? error : undefined);
   }
 }

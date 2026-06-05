@@ -29,6 +29,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   private productsController: AbortController | null = null;
   private categoriesController: AbortController | null = null;
+  private descriptionController: AbortController | null = null;
 
   readonly products = signal<Product[]>([]);
   readonly categories = signal<ProductCategory[]>([]);
@@ -37,6 +38,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   readonly loading = signal(true);
   readonly saving = signal(false);
   readonly errorMessage = signal("");
+  readonly descriptionVisible = signal(false);
+  readonly generatingDescription = signal(false);
   readonly productCount = computed(() => this.products().length);
   readonly hasCategories = computed(() => this.categories().length > 0);
 
@@ -60,6 +63,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.productsController?.abort();
     this.categoriesController?.abort();
+    this.descriptionController?.abort();
   }
 
   async loadCategories(): Promise<void> {
@@ -111,6 +115,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
         : product.productCategoryId._id;
 
     this.editingId.set(product._id);
+    this.descriptionVisible.set(Boolean(product.description));
     this.form.setValue({
       name: product.name,
       sku: product.sku,
@@ -125,7 +130,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   cancelEdit(): void {
+    this.descriptionController?.abort();
     this.editingId.set(null);
+    this.descriptionVisible.set(false);
+    this.generatingDescription.set(false);
     this.form.reset({
       name: "",
       sku: "",
@@ -175,6 +183,64 @@ export class ProductsComponent implements OnInit, OnDestroy {
     } finally {
       this.saving.set(false);
     }
+  }
+
+  async generateDescription(): Promise<void> {
+    const nameControl = this.form.controls.name;
+    const categoryControl = this.form.controls.productCategoryId;
+
+    if (nameControl.invalid || categoryControl.invalid) {
+      nameControl.markAsTouched();
+      categoryControl.markAsTouched();
+      this.errorMessage.set("Enter a product name and select a category first.");
+      return;
+    }
+
+    const category = this.categories().find(
+      (item) => item._id === categoryControl.getRawValue()
+    );
+
+    if (!category) {
+      this.errorMessage.set("The selected product category is not available.");
+      return;
+    }
+
+    this.descriptionController?.abort();
+    this.descriptionController = new AbortController();
+    this.descriptionVisible.set(true);
+    this.generatingDescription.set(true);
+    this.errorMessage.set("");
+    this.form.controls.description.setValue("");
+
+    try {
+      for await (const chunk of this.productService.generateDescription(
+        {
+          name: nameControl.getRawValue(),
+          sku: this.form.controls.sku.getRawValue() || undefined,
+          categoryName: category.name,
+          requiresPrescription: category.requiresPrescription
+        },
+        this.descriptionController.signal
+      )) {
+        const description = `${this.form.controls.description.getRawValue()}${chunk}`;
+        this.form.controls.description.setValue(description.slice(0, 1000));
+      }
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        this.errorMessage.set(
+          error instanceof Error
+            ? error.message
+            : "Could not generate the product description."
+        );
+      }
+    } finally {
+      this.generatingDescription.set(false);
+    }
+  }
+
+  cancelDescriptionGeneration(): void {
+    this.descriptionController?.abort();
+    this.generatingDescription.set(false);
   }
 
   async remove(product: Product): Promise<void> {

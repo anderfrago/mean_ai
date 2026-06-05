@@ -61,6 +61,19 @@ Prefer a central error handler. API errors should include:
 
 Never expose stack traces to clients outside development.
 
+## AI Integration
+
+When calling OpenAI:
+
+- Keep `OPENAI_API_KEY` exclusively on the server.
+- Use the official OpenAI SDK and Responses API.
+- Validate and minimize prompt inputs.
+- Make the model configurable with `OPENAI_MODEL`.
+- Stream text deltas when the UI needs progressive output.
+- Stop upstream generation when the client disconnects.
+- Handle missing configuration and provider failures with safe API errors.
+- Do not generate unsupported veterinary dosage, efficacy, contraindication, or regulatory claims.
+
 ## Done Criteria
 
 - Endpoint behavior is implemented.

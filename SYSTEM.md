@@ -108,8 +108,11 @@ All server changes must consider:
 - Secure password handling with hashing.
 - Environment-based secret configuration.
 - CORS rules that match the deployment model.
+- Third-party API keys remaining server-side.
 
 Never commit real credentials. Use `.env.example` for documented placeholders.
+
+OpenAI integrations should use the official server SDK and Responses API. Never expose `OPENAI_API_KEY` through Angular code or environment files.
 
 ## API Conventions
 

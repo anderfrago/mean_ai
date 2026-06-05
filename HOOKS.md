@@ -190,7 +190,23 @@ The frontend agent should verify:
 
 For important workflows, add or update an Angular or E2E test.
 
-## 8. Teaching Documentation Hook
+## 8. AI Integration Hook
+
+Trigger: When adding or changing OpenAI-backed behavior.
+
+The backend, frontend, and testing agents should verify:
+
+- `OPENAI_API_KEY` is read only by the server.
+- The model is configurable with `OPENAI_MODEL`.
+- Prompt inputs are validated and minimized.
+- Output length and veterinary claims are constrained.
+- Responses API text deltas are streamed progressively.
+- Browser and server cancellation stop unnecessary work.
+- Missing configuration returns a safe, explicit error.
+- Tests mock streams and do not spend API credits.
+- `.env.example`, README, and relevant lessons are updated.
+
+## 9. Teaching Documentation Hook
 
 Trigger: When creating or changing a lesson under `docs/`.
 
@@ -204,7 +220,7 @@ The veterinary web teacher agent should verify:
 - Students receive checkpoints, exercises, and review questions.
 - Examples match the current repository implementation.
 
-## 9. Pre-Commit Hook
+## 10. Pre-Commit Hook
 
 Trigger: Before creating a commit.
 
@@ -233,7 +249,7 @@ Do not commit:
 - Temporary verification data.
 - Unrelated user changes.
 
-## 10. Pre-Finish Hook
+## 11. Pre-Finish Hook
 
 Trigger: Before reporting a task as complete.
 

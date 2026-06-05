@@ -60,6 +60,7 @@ Angular services should:
 - Return typed `Promise` values.
 - Check `response.ok` and translate failed responses into useful typed errors.
 - Use `AbortController` when requests may need cancellation.
+- Decode streamed text incrementally from `ReadableStream`.
 - Keep endpoint URLs centralized or environment-driven.
 - Avoid embedding server response parsing in components.
 
