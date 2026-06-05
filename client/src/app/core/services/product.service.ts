@@ -12,6 +12,11 @@ export interface ProductDescriptionPrompt {
   requiresPrescription: boolean;
 }
 
+type ProductDescriptionStreamEvent =
+  | { type: "delta"; text: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
+
 @Injectable({
   providedIn: "root"
 })
@@ -77,22 +82,49 @@ export class ProductService {
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
+    let buffer = "";
+
+    const parseLine = (line: string): ProductDescriptionStreamEvent => {
+      try {
+        return JSON.parse(line) as ProductDescriptionStreamEvent;
+      } catch {
+        throw new Error("The description stream returned invalid data");
+      }
+    };
 
     try {
       while (true) {
         const { done, value } = await reader.read();
 
         if (done) {
-          const finalChunk = decoder.decode();
-          if (finalChunk) {
-            yield finalChunk;
-          }
+          buffer += decoder.decode();
           break;
         }
 
-        const chunk = decoder.decode(value, { stream: true });
-        if (chunk) {
-          yield chunk;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line) {
+            continue;
+          }
+
+          const event = parseLine(line);
+          if (event.type === "delta") {
+            yield event.text;
+          } else if (event.type === "error") {
+            throw new Error(event.message);
+          }
+        }
+      }
+
+      if (buffer.trim()) {
+        const event = parseLine(buffer);
+        if (event.type === "delta") {
+          yield event.text;
+        } else if (event.type === "error") {
+          throw new Error(event.message);
         }
       }
     } finally {

@@ -282,7 +282,15 @@ The Angular product form sends the product name, SKU, category, and prescription
 POST /api/products/generate-description
 ```
 
-The Express server calls the OpenAI Responses API with streaming enabled. It forwards only text deltas to Angular as a plain UTF-8 stream.
+The Express server calls the OpenAI Responses API with streaming enabled. It forwards NDJSON events to Angular:
+
+```json
+{"type":"delta","text":"Generated text"}
+{"type":"done"}
+{"type":"error","message":"Safe error message"}
+```
+
+This framing lets the UI distinguish generated text from provider errors without breaking the chunked HTTP response.
 
 Security rules:
 

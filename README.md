@@ -27,6 +27,8 @@ npm run dev
 
 Run `npm install` from the repository root. npm workspaces will install dependencies into the root `node_modules/` directory and link the `client` and `server` workspaces.
 
+Keep `.env` in the repository root. The backend resolves it correctly whether it is started from the root scripts or directly from `server/`.
+
 The API runs on `http://localhost:3000`.
 
 The Angular app runs on `http://localhost:4200`.
@@ -39,6 +41,12 @@ export OPENAI_MODEL="gpt-5.4-mini"
 ```
 
 `OPENAI_MODEL` is optional. The API key must remain server-side and must never be exposed through Angular environment files.
+
+During development, CORS accepts Angular from `localhost` or `127.0.0.1` on any port. For production, configure one or more exact origins separated by commas:
+
+```bash
+CLIENT_ORIGIN="https://app.example.com,https://admin.example.com"
+```
 
 ## Scripts
 

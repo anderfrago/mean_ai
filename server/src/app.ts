@@ -3,6 +3,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 
+import { corsOptions } from "./config/cors.js";
 import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { notFoundHandler } from "./middleware/not-found.js";
@@ -12,7 +13,7 @@ export function createApp(): express.Express {
   const app = express();
 
   app.use(helmet());
-  app.use(cors({ origin: env.CLIENT_ORIGIN }));
+  app.use(cors(corsOptions));
   app.use(express.json());
 
   if (env.NODE_ENV !== "test") {

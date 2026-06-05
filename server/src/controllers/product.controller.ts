@@ -30,6 +30,26 @@ const descriptionGenerationSchema = z.object({
   requiresPrescription: z.boolean().default(false)
 });
 
+function writeStreamEvent(
+  res: Response,
+  event: { type: "delta"; text: string } | { type: "done" } | { type: "error"; message: string }
+): void {
+  res.write(`${JSON.stringify(event)}\n`);
+}
+
+function getDescriptionStreamErrorMessage(error: unknown): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "insufficient_quota"
+  ) {
+    return "OpenAI quota exceeded. Check the API plan and billing configuration.";
+  }
+
+  return "OpenAI could not generate the product description.";
+}
+
 function getId(req: Request): string {
   const id = req.params["id"];
   return Array.isArray(id) ? (id[0] ?? "") : (id ?? "");
@@ -95,17 +115,18 @@ export async function generateDescription(
     const stream = await createProductDescriptionStream(input, controller.signal);
 
     res.status(200);
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Content-Type", "application/x-ndjson; charset=utf-8");
     res.setHeader("Cache-Control", "no-cache, no-transform");
     res.setHeader("X-Accel-Buffering", "no");
     res.flushHeaders();
 
     for await (const event of stream) {
       if (event.type === "response.output_text.delta") {
-        res.write(event.delta);
+        writeStreamEvent(res, { type: "delta", text: event.delta });
       }
     }
 
+    writeStreamEvent(res, { type: "done" });
     res.end();
   } catch (error) {
     if (!res.headersSent) {
@@ -113,6 +134,10 @@ export async function generateDescription(
       return;
     }
 
-    res.destroy(error instanceof Error ? error : undefined);
+    writeStreamEvent(res, {
+      type: "error",
+      message: getDescriptionStreamErrorMessage(error)
+    });
+    res.end();
   }
 }

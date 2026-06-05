@@ -5,6 +5,7 @@ import { createProductDescriptionStream } from "../src/services/product-descript
 
 describe("product description generation", () => {
   it("rejects generation when OpenAI is not configured", async () => {
+
     if (env.OPENAI_API_KEY) {
       return;
     }
