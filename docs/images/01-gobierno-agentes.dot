@@ -1,0 +1,41 @@
+digraph AgentGovernance {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    pad=0.35,
+    nodesep=0.35,
+    ranksep=0.55,
+    fontname="DejaVu Sans"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="DejaVu Sans",
+    fontsize=11,
+    color="#334155",
+    penwidth=1.2,
+    margin="0.18,0.12"
+  ];
+  edge [
+    color="#64748b",
+    penwidth=1.2,
+    arrowsize=0.75
+  ];
+
+  system [label="SYSTEM.md\nReglas globales", fillcolor="#dbeafe"];
+  hooks [label="HOOKS.md\nComprobaciones del ciclo", fillcolor="#fef3c7"];
+  skills [label="SKILLS.md\nProcedimientos reutilizables", fillcolor="#dcfce7"];
+  docs [label="docs/\nContexto y guias", fillcolor="#fce7f3"];
+
+  backend [label="backend.md", fillcolor="#f8fafc"];
+  database [label="database.md", fillcolor="#f8fafc"];
+  frontend [label="frontend.md", fillcolor="#f8fafc"];
+  testing [label="testing.md", fillcolor="#f8fafc"];
+  devops [label="devops.md", fillcolor="#f8fafc"];
+  teacher [label="vet-web-teacher.md", fillcolor="#f8fafc"];
+
+  system -> {backend database frontend testing devops teacher};
+  hooks -> {backend database frontend testing devops teacher} [style=dashed];
+  skills -> {backend frontend testing} [style=dashed];
+  docs -> teacher [style=dashed];
+}

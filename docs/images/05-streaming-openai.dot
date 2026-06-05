@@ -1,0 +1,44 @@
+digraph Streaming {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    pad=0.35,
+    nodesep=0.42,
+    ranksep=0.6,
+    fontname="DejaVu Sans"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="DejaVu Sans",
+    fontsize=10,
+    color="#334155",
+    penwidth=1.2,
+    margin="0.18,0.12"
+  ];
+  edge [
+    color="#475569",
+    penwidth=1.3,
+    arrowsize=0.75,
+    fontname="DejaVu Sans",
+    fontsize=9
+  ];
+
+  button [label="Boton IA\nAngular", fillcolor="#dbeafe"];
+  endpoint [label="POST generate-description\nExpress", fillcolor="#dcfce7"];
+  sdk [label="OpenAI SDK\nResponses API", fillcolor="#ede9fe"];
+  model [label="Modelo OpenAI", fillcolor="#fce7f3"];
+  ndjson [label="NDJSON\n{delta} ... {done}", fillcolor="#fef3c7"];
+  reader [label="ReadableStream\nTextDecoder + buffer", fillcolor="#fee2e2"];
+  textarea [label="Textarea\nSignal + Reactive Form", fillcolor="#e0f2fe"];
+  abort [label="AbortController\nStop / desconexion", fillcolor="#f8fafc"];
+
+  button -> endpoint [label=" prompt tipado "];
+  endpoint -> sdk -> model;
+  model -> sdk [label=" deltas "];
+  sdk -> ndjson;
+  ndjson -> reader [label=" chunks HTTP "];
+  reader -> textarea [label=" texto incremental "];
+  abort -> reader [style=dashed, color="#dc2626"];
+  abort -> endpoint [style=dashed, color="#dc2626"];
+}

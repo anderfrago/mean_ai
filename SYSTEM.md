@@ -31,6 +31,12 @@ Use this structure unless the project already contains a different established l
 │   ├── devops.md
 │   └── vet-web-teacher.md
 ├── docs/
+│   ├── README.md
+│   ├── 01-estructura-ia-codex.md
+│   ├── 02-monorepo-estructura.md
+│   ├── 03-crud-backend.md
+│   ├── 04-crud-frontend.md
+│   ├── 05-ia-descripciones-streaming.md
 │   └── products-crud-guide.md
 ├── server/
 │   ├── src/

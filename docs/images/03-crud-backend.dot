@@ -1,0 +1,42 @@
+digraph BackendCrud {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    pad=0.35,
+    nodesep=0.4,
+    ranksep=0.55,
+    fontname="DejaVu Sans"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="DejaVu Sans",
+    fontsize=10,
+    color="#334155",
+    penwidth=1.2,
+    margin="0.18,0.12"
+  ];
+  edge [
+    color="#475569",
+    penwidth=1.3,
+    arrowsize=0.75,
+    fontname="DejaVu Sans",
+    fontsize=9
+  ];
+
+  request [label="Peticion HTTP", fillcolor="#dbeafe"];
+  cors [label="CORS + Helmet", fillcolor="#fef3c7"];
+  route [label="Router\n/api/products", fillcolor="#e0f2fe"];
+  controller [label="Controller\nZod + estado HTTP", fillcolor="#dcfce7"];
+  service [label="Service\nReglas de negocio", fillcolor="#fce7f3"];
+  model [label="Mongoose Model\nIndices + validacion", fillcolor="#fee2e2"];
+  mongo [label="MongoDB", shape=cylinder, fillcolor="#ede9fe"];
+  error [label="Error middleware\nRespuesta uniforme", fillcolor="#ffedd5"];
+  response [label="ApiResponse<T>", fillcolor="#f8fafc"];
+
+  request -> cors -> route -> controller -> service -> model -> mongo;
+  mongo -> service [label=" documento "];
+  service -> controller -> response;
+  {cors route controller service model} -> error [style=dashed, color="#dc2626"];
+  error -> response [color="#dc2626"];
+}

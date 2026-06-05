@@ -74,9 +74,23 @@ The backend development watcher is restricted to `server/src/**/*.ts` so npm wor
 server/   Express API and MongoDB models
 client/   Angular application
 AGENTS/   Codex agent role guidance
+docs/     Development guides and architecture documentation
 SKILLS.md Codex reusable project skills
 SYSTEM.md Codex project operating guide
 ```
+
+## Documentation
+
+Start with the [documentation index](docs/README.md). The guides cover:
+
+- [Codex and AI project files](docs/01-estructura-ia-codex.md)
+- [Monorepo and folder structure](docs/02-monorepo-estructura.md)
+- [Backend CRUD, step by step](docs/03-crud-backend.md)
+- [Frontend CRUD, step by step](docs/04-crud-frontend.md)
+- [AI-generated descriptions with streaming](docs/05-ia-descripciones-streaming.md)
+
+A combined Word version is available at
+[mean-ai-documentacion.docx](docs/mean-ai-documentacion.docx).
 
 ## API
 

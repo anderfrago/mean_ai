@@ -1,0 +1,35 @@
+digraph Monorepo {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    pad=0.35,
+    nodesep=0.5,
+    ranksep=0.65,
+    fontname="DejaVu Sans"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="DejaVu Sans",
+    fontsize=11,
+    color="#334155",
+    penwidth=1.2,
+    margin="0.2,0.14"
+  ];
+  edge [color="#64748b", penwidth=1.3, arrowsize=0.8];
+
+  root [label="mean_ai/\npackage.json + npm workspaces", fillcolor="#dbeafe"];
+  modules [label="node_modules/\nDependencias compartidas", fillcolor="#fef3c7"];
+  client [label="client/\nAngular + Signals + Fetch", fillcolor="#dcfce7"];
+  server [label="server/\nExpress + Mongoose + OpenAI", fillcolor="#fee2e2"];
+  docs [label="docs/ + AGENTS/\nConocimiento del proyecto", fillcolor="#fce7f3"];
+  mongo [label="MongoDB\nDocker Compose", shape=cylinder, fillcolor="#e0f2fe"];
+  openai [label="OpenAI Responses API", fillcolor="#ede9fe"];
+  browser [label="Navegador", fillcolor="#f8fafc"];
+
+  root -> {modules client server docs};
+  browser -> client [label=" HTTP ", fontname="DejaVu Sans", fontsize=9];
+  client -> server [label=" /api + NDJSON ", fontname="DejaVu Sans", fontsize=9];
+  server -> mongo [label=" Mongoose ", fontname="DejaVu Sans", fontsize=9];
+  server -> openai [label=" stream ", fontname="DejaVu Sans", fontsize=9];
+}

@@ -1,0 +1,44 @@
+digraph FrontendCrud {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    pad=0.35,
+    nodesep=0.4,
+    ranksep=0.6,
+    fontname="DejaVu Sans"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="DejaVu Sans",
+    fontsize=10,
+    color="#334155",
+    penwidth=1.2,
+    margin="0.18,0.12"
+  ];
+  edge [
+    color="#475569",
+    penwidth=1.3,
+    arrowsize=0.75,
+    fontname="DejaVu Sans",
+    fontsize=9
+  ];
+
+  user [label="Usuario", fillcolor="#f8fafc"];
+  template [label="Template\nBootstrap + @if + @for", fillcolor="#dbeafe"];
+  form [label="Reactive Form\nValidadores", fillcolor="#fef3c7"];
+  signals [label="Signals\nloading, saving, data, error", fillcolor="#dcfce7"];
+  component [label="Standalone Component\nCoordinacion", fillcolor="#e0f2fe"];
+  service [label="Typed Service\nPromise / AsyncGenerator", fillcolor="#fce7f3"];
+  fetch [label="Fetch API\nAbortController", fillcolor="#fee2e2"];
+  api [label="Express API", fillcolor="#ede9fe"];
+
+  user -> template [label=" accion "];
+  template -> form;
+  form -> component [label=" submit "];
+  component -> service -> fetch -> api;
+  api -> fetch [label=" JSON "];
+  fetch -> service -> component;
+  component -> signals [label=" set/update "];
+  signals -> template [label=" render reactivo "];
+}
