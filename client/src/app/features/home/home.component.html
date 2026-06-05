@@ -1,0 +1,24 @@
+<main class="shell">
+  <section class="panel" aria-labelledby="page-title">
+    <p class="eyebrow">MEAN stack</p>
+    <h1 id="page-title">mean_ai</h1>
+    <p class="summary">
+      Angular is connected to the Express API contract and ready for feature work.
+    </p>
+
+    @if (vm$ | async; as vm) {
+      <div class="status" [class.status--ready]="vm.state === 'ready'" [class.status--error]="vm.state === 'error'">
+        <span class="status__dot" aria-hidden="true"></span>
+        @if (vm.state === 'loading') {
+          <span>Checking API status...</span>
+        }
+        @if (vm.state === 'ready') {
+          <span>API online: {{ vm.service }}</span>
+        }
+        @if (vm.state === 'error') {
+          <span>{{ vm.message }}</span>
+        }
+      </div>
+    }
+  </section>
+</main>

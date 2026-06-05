@@ -1,0 +1,35 @@
+{
+  "name": "mean_ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MEAN stack application scaffold for anderfrago/mean_ai.",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w server\" \"npm run start -w client\"",
+    "frontend": "npm run start -w client",
+    "backend": "npm run dev -w server",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run start -w client",
+    "build": "npm run build -w server && npm run build -w client",
+    "build:backend": "npm run build -w server",
+    "build:frontend": "npm run build -w client",
+    "test": "npm run test -w server && npm run test -w client",
+    "test:backend": "npm run test -w server",
+    "test:frontend": "npm run test -w client",
+    "lint": "npm run lint -w server && npm run lint -w client",
+    "lint:backend": "npm run lint -w server",
+    "lint:frontend": "npm run lint -w client",
+    "typecheck": "npm run typecheck -w server",
+    "typecheck:backend": "npm run typecheck -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || ^24.0.0",
+    "npm": ">=10.0.0"
+  }
+}
