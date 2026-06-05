@@ -28,7 +28,10 @@
                 "input": "src/assets"
               }
             ],
-            "styles": ["src/styles/styles.css"],
+            "styles": [
+              "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles/styles.css"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -42,7 +45,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "600kB",
                   "maximumError": "1MB"
                 },
                 {
@@ -90,7 +93,10 @@
                 "input": "src/assets"
               }
             ],
-            "styles": ["src/styles/styles.css"],
+            "styles": [
+              "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles/styles.css"
+            ],
             "scripts": []
           }
         }

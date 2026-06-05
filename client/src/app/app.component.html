@@ -1,0 +1,23 @@
+<div class="app-shell">
+  <header class="navbar navbar-expand-md bg-white border-bottom px-3 px-lg-4 py-2">
+    <a class="navbar-brand d-flex align-items-center gap-2 me-4" routerLink="/products">
+      <span class="brand-mark">V</span>
+      <span>
+        <strong class="d-block fs-6">Vet Inventory</strong>
+        <small class="d-block text-secondary">mean_ai</small>
+      </span>
+    </a>
+
+    <nav class="nav nav-pills flex-nowrap overflow-x-auto ms-md-auto" aria-label="Main navigation">
+      <a class="nav-link" routerLink="/products" routerLinkActive="active">Products</a>
+      <a class="nav-link" routerLink="/product-categories" routerLinkActive="active">
+        Categories
+      </a>
+      <a class="nav-link" routerLink="/status" routerLinkActive="active">API status</a>
+    </nav>
+  </header>
+
+  <main class="container-fluid content">
+    <router-outlet />
+  </main>
+</div>

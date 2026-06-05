@@ -6,8 +6,13 @@
       Angular is connected to the Express API contract and ready for feature work.
     </p>
 
-    @if (vm$ | async; as vm) {
-      <div class="status" [class.status--ready]="vm.state === 'ready'" [class.status--error]="vm.state === 'error'">
+    @if (vm(); as vm) {
+      <div
+        class="alert d-inline-flex align-items-center gap-2 mb-0"
+        [class.alert-secondary]="vm.state === 'loading'"
+        [class.alert-success]="vm.state === 'ready'"
+        [class.alert-danger]="vm.state === 'error'"
+      >
         <span class="status__dot" aria-hidden="true"></span>
         @if (vm.state === 'loading') {
           <span>Checking API status...</span>

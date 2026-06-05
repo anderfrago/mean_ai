@@ -1,0 +1,30 @@
+.app-shell {
+  min-height: 100vh;
+}
+
+.brand-mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 6px;
+  color: #ffffff;
+  background: #236b52;
+  font-weight: 800;
+}
+
+.nav-pills {
+  --bs-nav-pills-link-active-bg: #236b52;
+}
+
+.content {
+  width: min(100%, 1500px);
+  margin: 0 auto;
+  padding: 32px 28px 48px;
+}
+
+@media (max-width: 680px) {
+  .content {
+    padding: 24px 16px 40px;
+  }
+}

@@ -1,0 +1,182 @@
+<header class="page-header page-header--with-control">
+  <div>
+    <p class="eyebrow">Veterinary inventory</p>
+    <h1>Products</h1>
+    <p>Manage clinical stock, pricing, expiration dates, and prescription status.</p>
+  </div>
+
+  <label class="filter-field">
+    Filter by category
+    <select
+      class="form-select"
+      [value]="selectedCategoryId()"
+      (change)="filterByCategory($event)"
+    >
+      <option value="">All categories</option>
+      @for (category of categories(); track category._id) {
+        <option [value]="category._id">{{ category.name }}</option>
+      }
+    </select>
+  </label>
+</header>
+
+@if (errorMessage()) {
+  <div class="alert alert-danger" role="alert">{{ errorMessage() }}</div>
+}
+
+<div class="workspace-grid">
+  <section class="data-section" aria-labelledby="product-list-title">
+    <div class="section-heading">
+      <div>
+        <h2 id="product-list-title">Inventory</h2>
+        <p>{{ productCount() }} products shown</p>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <p class="state-message">Loading products...</p>
+    } @else if (productCount() === 0) {
+      <p class="state-message">No products match this category.</p>
+    } @else {
+      <div class="table-responsive border rounded bg-white">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Expires</th>
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products(); track product._id) {
+              <tr>
+                <td>
+                  <strong>{{ product.name }}</strong>
+                  <span class="cell-detail">{{ product.sku }}</span>
+                  @if (!product.active) {
+                    <span class="badge text-bg-secondary">Inactive</span>
+                  }
+                </td>
+                <td>
+                  {{ categoryName(product) }}
+                  @if (requiresPrescription(product)) {
+                    <span class="badge text-bg-warning mt-1">Prescription</span>
+                  }
+                </td>
+                <td>{{ product.unitPrice | currency:"EUR" }}</td>
+                <td>
+                  <span
+                    class="stock-value"
+                    [class.stock-value--low]="product.stockQuantity <= product.minimumStock"
+                  >
+                    {{ product.stockQuantity }}
+                  </span>
+                  <span class="cell-detail">Minimum {{ product.minimumStock }}</span>
+                </td>
+                <td>
+                  {{ product.expirationDate ? (product.expirationDate | date:"mediumDate") : "Not set" }}
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Product actions">
+                  <button type="button" class="btn btn-outline-secondary" (click)="edit(product)">
+                    Edit
+                  </button>
+                  <button type="button" class="btn btn-outline-danger" (click)="remove(product)">
+                    Delete
+                  </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="form-section" aria-labelledby="product-form-title">
+    <h2 id="product-form-title">{{ editingId() ? "Edit product" : "New product" }}</h2>
+    @if (!hasCategories()) {
+      <div class="alert alert-info">Create a product category before adding products.</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-row">
+        <label>
+          Name
+          <input class="form-control" type="text" formControlName="name" autocomplete="off">
+        </label>
+        <label>
+          SKU
+          <input class="form-control" type="text" formControlName="sku" autocomplete="off">
+        </label>
+      </div>
+
+      <label>
+        Category
+        <select class="form-select" formControlName="productCategoryId">
+          <option value="">Select a category</option>
+          @for (category of categories(); track category._id) {
+            <option [value]="category._id">{{ category.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Description
+        <textarea class="form-control" formControlName="description" rows="3"></textarea>
+      </label>
+
+      <div class="form-row form-row--three">
+        <label>
+          Unit price
+          <input class="form-control" type="number" formControlName="unitPrice" min="0" step="0.01">
+        </label>
+        <label>
+          Stock
+          <input class="form-control" type="number" formControlName="stockQuantity" min="0" step="1">
+        </label>
+        <label>
+          Minimum stock
+          <input class="form-control" type="number" formControlName="minimumStock" min="0" step="1">
+        </label>
+      </div>
+
+      <label>
+        Expiration date
+        <input class="form-control" type="date" formControlName="expirationDate">
+      </label>
+
+      <label class="form-check">
+        <input class="form-check-input" type="checkbox" formControlName="active">
+        <span class="form-check-label">
+        Active product
+        </span>
+      </label>
+
+      @if (form.touched && form.invalid) {
+        <p class="text-danger small mb-0">
+          Complete all required fields with valid positive values.
+        </p>
+      }
+
+      <div class="d-flex justify-content-end gap-2">
+        @if (editingId()) {
+          <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
+            Cancel
+          </button>
+        }
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="saving() || !hasCategories()"
+        >
+          {{ saving() ? "Saving..." : editingId() ? "Update product" : "Create product" }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

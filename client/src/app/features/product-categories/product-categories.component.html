@@ -1,0 +1,116 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Veterinary inventory</p>
+    <h1>Product categories</h1>
+    <p>Organize medication, food, hygiene products, equipment, and clinical supplies.</p>
+  </div>
+</header>
+
+@if (errorMessage()) {
+  <div class="alert alert-danger" role="alert">{{ errorMessage() }}</div>
+}
+
+<div class="workspace-grid">
+  <section class="data-section" aria-labelledby="category-list-title">
+    <div class="section-heading">
+      <div>
+        <h2 id="category-list-title">Categories</h2>
+        <p>{{ categoryCount() }} registered</p>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <p class="state-message">Loading categories...</p>
+    } @else if (categoryCount() === 0) {
+      <p class="state-message">No categories yet. Create the first category using the form.</p>
+    } @else {
+      <div class="table-responsive border rounded bg-white">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Prescription</th>
+              <th>Status</th>
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (category of categories(); track category._id) {
+              <tr>
+                <td>
+                  <strong>{{ category.name }}</strong>
+                  @if (category.description) {
+                    <span class="cell-detail">{{ category.description }}</span>
+                  }
+                </td>
+                <td>{{ category.requiresPrescription ? "Required" : "No" }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [class.text-bg-success]="category.active"
+                    [class.text-bg-secondary]="!category.active"
+                  >
+                    {{ category.active ? "Active" : "Inactive" }}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Category actions">
+                  <button type="button" class="btn btn-outline-secondary" (click)="edit(category)">
+                    Edit
+                  </button>
+                  <button type="button" class="btn btn-outline-danger" (click)="remove(category)">
+                    Delete
+                  </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  <section class="form-section" aria-labelledby="category-form-title">
+    <h2 id="category-form-title">{{ editingId() ? "Edit category" : "New category" }}</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Name
+        <input class="form-control" type="text" formControlName="name" autocomplete="off">
+      </label>
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <p class="text-danger small mb-0">Enter a name between 2 and 100 characters.</p>
+      }
+
+      <label>
+        Description
+        <textarea class="form-control" formControlName="description" rows="4"></textarea>
+      </label>
+
+      <label class="form-check">
+        <input class="form-check-input" type="checkbox" formControlName="requiresPrescription">
+        <span class="form-check-label">
+        Requires a veterinary prescription
+        </span>
+      </label>
+
+      <label class="form-check">
+        <input class="form-check-input" type="checkbox" formControlName="active">
+        <span class="form-check-label">
+        Active category
+        </span>
+      </label>
+
+      <div class="d-flex justify-content-end gap-2">
+        @if (editingId()) {
+          <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
+            Cancel
+          </button>
+        }
+        <button type="submit" class="btn btn-success" [disabled]="saving()">
+          {{ saving() ? "Saving..." : editingId() ? "Update category" : "Create category" }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: 24px;
+}
+
+.data-section,
+.form-section {
+  min-width: 0;
+}
+
+.form-section {
+  padding-left: 24px;
+  border-left: 1px solid var(--border);
+}
+
+form {
+  display: grid;
+  gap: 18px;
+}
+
+@media (max-width: 900px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-section {
+    padding-top: 24px;
+    padding-left: 0;
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+}

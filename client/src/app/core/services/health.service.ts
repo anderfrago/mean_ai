@@ -1,9 +1,8 @@
-import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable } from "@angular/core";
 
 import { environment } from "../../../environments/environment";
 import { ApiResponse } from "../../shared/models/api-response.model";
+import { fetchApi } from "./fetch-api";
 
 export interface HealthStatus {
   status: "ok";
@@ -14,10 +13,9 @@ export interface HealthStatus {
   providedIn: "root"
 })
 export class HealthService {
-  private readonly http = inject(HttpClient);
   private readonly apiBaseUrl = environment.apiBaseUrl;
 
-  getHealth(): Observable<ApiResponse<HealthStatus>> {
-    return this.http.get<ApiResponse<HealthStatus>>(`${this.apiBaseUrl}/health`);
+  getHealth(signal?: AbortSignal): Promise<ApiResponse<HealthStatus>> {
+    return fetchApi<HealthStatus>(`${this.apiBaseUrl}/health`, { signal });
   }
 }

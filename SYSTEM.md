@@ -12,6 +12,7 @@ MEAN means:
 - Node.js for server runtime, tooling, and scripts.
 
 Codex should treat this file as the project-level operating guide. More specific guidance lives in `AGENTS/*.md` and reusable capabilities live in `SKILLS.md`.
+Lifecycle checkpoints shared by all agents live in `HOOKS.md`.
 
 ## Expected Repository Shape
 
@@ -21,6 +22,7 @@ Use this structure unless the project already contains a different established l
 .
 ├── SYSTEM.md
 ├── SKILLS.md
+├── HOOKS.md
 ├── AGENTS/
 │   ├── backend.md
 │   ├── frontend.md
@@ -81,7 +83,9 @@ Prefer:
 - Mongoose models and schemas for MongoDB documents.
 - Environment-driven configuration.
 - Angular standalone components when the project uses modern Angular.
-- RxJS and Angular services for API state.
+- Angular signals for application and view state.
+- Browser Fetch API services returning typed promises.
+- Bootstrap for standard layout, forms, tables, navigation, and UI components.
 - Explicit DTOs or interfaces for API request and response shapes.
 
 Avoid:
@@ -195,3 +199,4 @@ Update:
 - `README.md` when setup or runtime behavior changes.
 - `.env.example` when configuration changes.
 - `SYSTEM.md`, `SKILLS.md`, or `AGENTS/*.md` when Codex workflow expectations change.
+- `HOOKS.md` when agent lifecycle checks or automation expectations change.

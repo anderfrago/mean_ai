@@ -67,6 +67,29 @@ Health endpoint:
 GET /api/health
 ```
 
+Inventory endpoints:
+
+```text
+GET    /api/product-categories
+POST   /api/product-categories
+GET    /api/product-categories/:id
+PATCH  /api/product-categories/:id
+DELETE /api/product-categories/:id
+
+GET    /api/products
+POST   /api/products
+GET    /api/products/:id
+PATCH  /api/products/:id
+DELETE /api/products/:id
+```
+
+The Angular inventory screens are available at:
+
+```text
+/products
+/product-categories
+```
+
 Example response:
 
 ```json
