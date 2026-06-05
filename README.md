@@ -58,6 +58,8 @@ npm run lint:backend
 npm run typecheck
 ```
 
+The backend development watcher is restricted to `server/src/**/*.ts` so npm workspace dependencies in the root `node_modules/` directory do not exhaust Linux file watchers.
+
 ## Project Layout
 
 ```text
